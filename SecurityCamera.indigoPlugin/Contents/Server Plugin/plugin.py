@@ -18,7 +18,6 @@ import math
 import requests
 from requests.auth import HTTPDigestAuth
 from datetime import date
-from ghpu import GitHubPluginUpdater
 from PIL import Image, ImageFont, ImageDraw, ImageChops, ImageEnhance
 from StringIO import StringIO
 import numpy as np
@@ -807,7 +806,6 @@ def GetMosaic(device):
 class Plugin(indigo.PluginBase):
 	def __init__(self, pluginId, pluginDisplayName, pluginVersion, pluginPrefs):
 		indigo.PluginBase.__init__(self, pluginId, pluginDisplayName, pluginVersion, pluginPrefs)
-		self.updater = GitHubPluginUpdater(self)		
 
 	def __del__(self):
 		indigo.PluginBase.__del__(self)
@@ -815,16 +813,7 @@ class Plugin(indigo.PluginBase):
 	def startup(self):
 		indigo.server.log("-----  startup called  ------")
 		indigo.server.log("Checking for update")
-		
-		ActiveVersion = str(self.pluginVersion)
-		CurrentVersion = str(self.updater.getVersion())
-		
-		if ActiveVersion == CurrentVersion:
-			indigo.server.log("Running the current version of Security Camera")
-		else:
-			indigo.server.log("The current version of Security Camera is " + str(CurrentVersion) + " and the running version " + str(ActiveVersion) + ".")
-			indigo.server.log("WARNING !:  Upgrading to this version will require recreating all existing cameras.")
-		
+				
 		SnapshotDir = indigo.activePlugin.pluginPrefs["SnapshotDirectory"]
 		MainDir = indigo.activePlugin.pluginPrefs["MainDirectory"]
 		
@@ -992,22 +981,7 @@ class Plugin(indigo.PluginBase):
 #
 ################################################################################
 
-	def checkForUpdate(self):
-		ActiveVersion = str(self.pluginVersion)
-		CurrentVersion = str(self.updater.getVersion())
-		if ActiveVersion == CurrentVersion:
-			indigo.server.log("Running the most recent version of Security Camera")
-		else:
-			indigo.server.log("The current version of Security Camera is " + str(CurrentVersion) + " and the running version " + str(ActiveVersion) + ".")
 		
-	def updatePlugin(self):
-		ActiveVersion = str(self.pluginVersion)
-		CurrentVersion = str(self.updater.getVersion())
-		if ActiveVersion == CurrentVersion:
-			indigo.server.log("Already running the most recent version of Security Camera")
-		else:
-			indigo.server.log("The current version of Security Camera is " + str(CurrentVersion) + " and the running version " + str(ActiveVersion) + ".")
-			self.updater.update()
     	
 ################################################################################
 #
